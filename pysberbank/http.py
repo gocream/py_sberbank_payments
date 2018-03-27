@@ -3,7 +3,8 @@
 import logging
 import requests
 
-from .errors import SberNetworkException
+from .errors import SberbankException
+from .errors import SberbankRequestException
 
 logger = logging.getLogger("pysberbank")
 
@@ -142,7 +143,7 @@ class SberbankPaymentApi:
         """
 
         if (orderId is None) and (orderNumber is None):
-            raise SberbankApiRequestException("none of the orderId and \
+            raise SberbankRequestException("none of the orderId and \
                 orderNumber parameters is specified")
 
         params = extra_params.copy()
