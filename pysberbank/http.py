@@ -17,9 +17,6 @@ logger = logging.getLogger("pysberbank")
 #     return wrapper
 
 
-def remove_null_elements(d):
-    for k, v in
-
 
 
 DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"
@@ -44,7 +41,7 @@ class SberbankPaymentApi:
             currency - default currency (ISO 4217)
         """
 
-        if (not (bool(username) and bool(password))) != (token is None):
+        if (not (bool(username) and bool(password))) == (token is None):
             raise SberbankException("Auth params require. Setup username/password pair or token, not booth")
 
         self.username = username
