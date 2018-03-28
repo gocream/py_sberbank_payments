@@ -10,40 +10,84 @@ logger = logging.getLogger("pysberbank")
 
 
 
+# def request_decorator(fn):
+#     def wrapper(cls, url=None, api_type=None, *args, **kwargs):
+#         method_name, params = fn(cls, *args, **kwargs)
+#         return cls._make_request(url, api_type, method_name, params)
+#     return wrapper
+
+
+def remove_null_elements(d):
+    for k, v in
+
+
 
 DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"
 DEFAULT_API_TYPE = "rest"
+DEFAULT_LANGUAGE = "ru"
+DEFAULT_CURREBCY = 643
 
 class SberbankPaymentApi:
     """
         sberbank payment api
     """
 
-    def __init__(self, user=None, password=None, url=DEFAULT_URL,
-                 api_type=DEFAULT_API_TYPE, language="ru", currency=643):
-        self.user = user
+    def __init__(self, username=None, password=None, token=None,
+                 url=DEFAULT_URL, api_type=DEFAULT_API_TYPE,
+                 language=DEFAULT_LANGUAGE, currency=DEFAULT_CURREBCY):
+        """
+            username - username at sberbank api
+            password - password at sberbank api
+            url - api url address
+            api_type - api type (soap | rest) only rest ready
+            language - default language (ISO 639-1)
+            currency - default currency (ISO 4217)
+        """
+
+        if (not (bool(username) and bool(password))) != (token is None):
+            raise SberbankException("Auth params require. Setup username/password pair or token, not booth")
+
+        self.username = username
         self.password = password
+        self.token = token
+
         self.url = url
         self.api_type = api_type
         self.language = language
         self.currency = currency
 
-    def _make_data(self, params):
-        data = {
-            'userName': self.user,
-            'password': self.password,
-            'language': self.language,
-        }
-        data.update(params)
+    def _make_data(self, params, remove_null=True):
+        """
+        add username/password pair or token to request params
+
+        remove_null: if True - remove all None elements from params
+        """
+
+        if remove_null:
+            data = dict(filter(lambda x:x[1], params.items()))
+        else:
+            data = params.copy()
+
+        if self.token:
+            data['token'] = self.token
+        else:
+            data.update({
+                'userName': self.username,
+                'password': self.password,
+            })
+
         return data
 
-    def _make_request(self, api_type, method_name, data):
-        method = method_name
+    def _make_request(self, url, api_type, method_name, params=dict(),
+                      remove_null=True):
         if api_type == 'rest':
             method = f'{method_name}.do'
+        else:
+            method = method_name
 
+        data = self._make_data(params)
         response = requests.post(url.format(api_type=api_type, method=method),
-                                 data=data)
+                                 data=data, remove_null=remove_null)
 
         result = response.content
         if api_type == 'rest':
@@ -51,38 +95,35 @@ class SberbankPaymentApi:
         return result
 
     def register(self, orderNumber, amount, returnUrl, currency=None,
-                 extra_params=dict()):
+                 failUrl=None, description=None, language=None, pageView=None,
+                 clientId=None, merchantLogin=None, jsonParams=None,
+                 sessionTimeoutSecs=None, expirationDate=None, bindingId=None,
+                 features=None, extra_params=dict(), url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
-
-        orderNumber - Номер (идентификатор) заказа в системе магазина, уникален
-            для каждого магазина в пределах системы - до 30 символов.
-
-        amount - Сумма платежа в минимальных единицах валюты (копейки, центы и
-            т. п.).
-
-        returnUrl - Адрес, на который требуется перенаправить пользователя в
-            случае успешной оплаты. Адрес должен быть указан полностью, включая
-            используемый протокол (например, https://test.ru вместо test.ru).
-            В противном случае пользователь будет перенаправлен по адресу
-            следующего вида: http://<адрес_платёжного_шлюза>/<адрес_продавца>.
-
-        currency - Код валюты платежа ISO 4217. Если не указан, считается
-            равным коду валюты по умолчанию.
         """
 
-        params = extra_params.copy()
-        params.update({
+        params = {
             'orderNumber': orderNumber,
             'amount': amount,
             'returnUrl': returnUrl,
             'currency': currency or self.currency,
-        })
-        result = self._make_request(self.url, self.api_type, 'register',
-                               self._make_data(params))
+            'failUrl': failUrl,
+            'description': description,
+            'language': language or self.language,
+            'pageView': pageView,
+            'clientId': clientId,
+            'merchantLogin': merchantLogin,
+            'jsonParams': jsonParams,
+            'sessionTimeoutSecs': sessionTimeoutSecs,
+            'expirationDate': expirationDate,
+            'bindingId': bindingId,
+            'features': features,
+        }
+        result = self._make_request(url or self.url, api_type or self.api_type, 'register', params)
         return result
 
-    def reverse(self, orderId, extra_params=dict()):
+    def reverse(self, orderId, extra_params=dict(), url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:reverse
 
@@ -93,11 +134,10 @@ class SberbankPaymentApi:
         params.update({
             'orderId': orderId,
         })
-        result = self._make_request(self.url, self.api_type, 'reverse',
-                               self._make_data(params))
+        result = self._make_request(url or self.url, api_type or self.api_type, 'reverse', params)
         return result
 
-    def refund(self, orderId, refundAmount, extra_params=dict()):
+    def refund(self, orderId, refundAmount, extra_params=dict(), url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
 
@@ -111,11 +151,10 @@ class SberbankPaymentApi:
             'orderId': orderId,
             'refundAmount': refundAmount,
         })
-        result = self._make_request(self.url, self.api_type, 'refund',
-                               self._make_data(params))
+        result = self._make_request(url or self.url, api_type or self.api_type, 'refund', params)
         return result
 
-    def order_status(self, orderId, extra_params=dict()):
+    def order_status(self, orderId, extra_params=dict(), url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatus
 
@@ -126,11 +165,11 @@ class SberbankPaymentApi:
         params.update({
             'orderId': orderId,
         })
-        result = self._make_request(self.url, self.api_type, 'getOrderStatus', self._make_data(params))
+        result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatus', params)
         return result
 
     def order_full_status(self, orderId=None, orderNumber=None,
-                          extra_params=dict()):
+                          extra_params=dict(), url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended
 
@@ -143,7 +182,7 @@ class SberbankPaymentApi:
         """
 
         if (orderId is None) and (orderNumber is None):
-            raise SberbankRequestException("none of the orderId and \
+            raise SberbankApiRequestException("none of the orderId and \
                 orderNumber parameters is specified")
 
         params = extra_params.copy()
@@ -151,5 +190,5 @@ class SberbankPaymentApi:
             'orderId': orderId,
             'orderNumber': orderNumber,
         })
-        result = self._make_request(self.url, self.api_type, 'getOrderStatusExtended', self._make_data(params))
+        result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatusExtended', params)
         return result
