@@ -82,9 +82,9 @@ class SberbankPaymentApi:
         else:
             method = method_name
 
-        data = self._make_data(params)
+        data = self._make_data(params, remove_null=remove_null)
         response = requests.post(url.format(api_type=api_type, method=method),
-                                 data=data, remove_null=remove_null)
+                                 data=data)
 
         result = response.content
         if api_type == 'rest':
