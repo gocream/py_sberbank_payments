@@ -17,70 +17,70 @@ REGISTER_REQUEST = {
     "formUrl": "https://server/application_context/merchants/test/payment_ru.html?mdOrder=70906e55-7114-41d6-8332-4609dc6590f4"
 }
 REGISTER_ERRORS = {
-    '0_all_good': {
+    '0': {
         'errorCode': 0,
         'errorMessage': "Обработка запроса прошла без системных ошибок.",
     },
 
-    '1_orderNumber_exists': {
+    '1000': {
         'errorCode': 1,
         'errorMessage': "Заказ с таким номером уже обработан.",
     },
-    '1_orderNumber_incorrect': {
+    '1001': {
         'errorCode': 1,
         'errorMessage': "Неверный номер заказа.",
     },
 
-    '3_currency_incorrect': {
+    '3000': {
         'errorCode': 3,
         'errorMessage': "Неизвестная валюта.",
     },
 
-    '4_userName_Blank': {
-        'errorCode': 4,
-        'errorMessage': "Имя продавца не может быть пустым.",
-    },
-    '4_password_Blank': {
-        'errorCode': 4,
-        'errorMessage': "Пароль не может быть пуст.",
-    },
-    '4_orderNumber_Blank': {
+    '4000': {
         'errorCode': 4,
         'errorMessage': "Номер заказа не может быть пуст.",
     },
-    '4_amount_Blank': {
+    '4001': {
+        'errorCode': 4,
+        'errorMessage': "Имя продавца не может быть пустым.",
+    },
+    '4002': {
         'errorCode': 4,
         'errorMessage': "Отсутствует сумма.",
     },
-    '4_returnUrl_Blank': {
+    '4003': {
         'errorCode': 4,
         'errorMessage': "URL возврата не может быть пуст.",
     },
+    '4004': {
+        'errorCode': 4,
+        'errorMessage': "Пароль не может быть пуст.",
+    },
 
-    '5_password_access_denied': {
+    '5000': {
         'errorCode': 5,
         'errorMessage': "Доступ запрещён.",
     },
-    '5_password_must_change': {
+    '5001': {
         'errorCode': 5,
         'errorMessage': "Пользователь должен сменить свой пароль.",
     },
-    '5_jsonParams_incorrect': {
+    '5002': {
         'errorCode': 5,
         'errorMessage': "[jsonParams] неверен.",
     },
 
-    '7_error_500': {
+    '7000': {
         'errorCode': 7,
         'errorMessage': "Системная ошибка.",
     },
 
-    '13_merch_cant_checkpay': {
+    '13000': {
         'errorCode': 13,
         'errorMessage': "Мерчант не имеет привилегии выполнять проверочные платежи.",
     },
 
-    '14_features_incorrect': {
+    '14000': {
         'errorCode': 14,
         'errorMessage': "Features указаны некорректно.",
     },
@@ -106,58 +106,61 @@ def _test_request(url, params=None, **kwargs):
         jsonParams = data.get('jsonParams', None)
         features = data.get('features', None)
 
-        if int(orderNumber) == 1:
-            # 0, Обработка запроса прошла без системных ошибок.
-            result = '0_all_good'
+        # if int(orderNumber) == 1:
+        #     # 0, Обработка запроса прошла без системных ошибок.
+        #     result = '0_all_good'
 
-        elif int(orderNumber) == 1001:
-            # 1, Заказ с таким номером уже обработан.
-            result = '1_orderNumber_exists'
-        elif int(orderNumber) == 1002:
-            # 1, Неверный номер заказа.
-            result = '1_orderNumber_incorrect'
+        # elif int(orderNumber) == 1001:
+        #     # 1, Заказ с таким номером уже обработан.
+        #     result = '1_orderNumber_exists'
+        # elif int(orderNumber) == 1002:
+        #     # 1, Неверный номер заказа.
+        #     result = '1_orderNumber_incorrect'
+
+        if orderNumber in REGISTER_ERRORS:
+            result = orderNumber
 
         elif currency == "incorrect":
             # 3, Неизвестная валюта.
-            result = '3_currency_incorrect'
+            result = '3001'
 
-        elif not userName:
-            # 4, Имя продавца не может быть пустым.
-            result = '4_userName_Blank'
-        elif not password:
-            # 4, Пароль не может быть пуст.
-            result = '4_password_Blank'
-        elif not amount:
-            # 4, Отсутствует сумма.
-            result = '4_amount_Blank'
-        elif not returnUrl:
-            # 4, URL возврата не может быть пуст.
-            result = '4_returnUrl_Blank'
         elif not orderNumber:
             # 4, Номер заказа не может быть пуст.
-            result = '4_orderNumber_Blank'
+            result = '4000'
+        elif not userName:
+            # 4, Имя продавца не может быть пустым.
+            result = '4001'
+        elif not amount:
+            # 4, Отсутствует сумма.
+            result = '4002'
+        elif not returnUrl:
+            # 4, URL возврата не может быть пуст.
+            result = '4003'
+        elif not password:
+            # 4, Пароль не может быть пуст.
+            result = '4004'
 
         elif password == "access_denied":
             # 5, Доступ запрещён.
-            result = '5_password_access_denied'
+            result = '5000'
         elif password == "must_change":
             # 5, Пользователь должен сменить свой пароль.
-            result = '5_password_must_change'
+            result = '5001'
         elif jsonParams and jsonParams.get('code', None) == "incorrect":
             # 5, [jsonParams] неверен.
-            result = '5_jsonParams_incorrect'
+            result = '5002'
 
         elif int(orderNumber) == 500:
             # 7, Системная ошибка.
-            result = '7_error_500'
+            result = '7000'
 
         elif int(orderNumber) == 300:
             # 13, Мерчант не имеет привилегии выполнять проверочные платежи.
-            result = '13_merch_cant_checkpay'
+            result = '13000'
 
         elif features and features != "AUTO_PAYMENT":
             # 14, Номер заказа не может быть пуст.
-            result = '14_features_incorrect'
+            result = '14000'
 
         else:
             result = '42'
@@ -184,11 +187,13 @@ class SberbankApiTestCase(TestCase):
         self.assertEqual(response, REGISTER_REQUEST)
 
     def test_register_errors(self):
-
         api = Sberbank("test_username", "test_password")
-        response = api.register("1", "1000", "https://returnurl.example/")
-        self.assertIsNotNone(response)
-        self.assertEqual(response, REGISTER_ERRORS['0_all_good'])
+
+        for k, v in REGISTER_ERRORS.items():
+            with self.subTest(orderNumber=k):
+                response = api.register(k, "1000", "https://returnurl.example/")
+                self.assertIsNotNone(response)
+                self.assertEqual(response, v)
 
 
 if __name__ == '__main__':
