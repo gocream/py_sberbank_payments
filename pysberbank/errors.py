@@ -11,9 +11,8 @@ class SberbankException(Exception):
 class SberbankRequestException(SberbankException):
     pass
 
-class SberbankRequestCodeException(SberbankException):
-    def __init__(self, request, code, message):
-        self.request = request
+class SberbankApiException(SberbankException):
+    def __init__(self, code, message):
         self.code = code
         self.message = message
 
