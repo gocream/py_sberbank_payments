@@ -3,6 +3,7 @@
 import logging
 import requests
 
+from .errors import SberbankApiException
 from .errors import SberbankException
 from .errors import SberbankRequestException
 
@@ -83,8 +84,10 @@ class SberbankPaymentApi:
             method = method_name
 
         data = self._make_data(params, remove_null=remove_null)
-        response = requests.post(url.format(api_type=api_type, method=method),
-                                 data=data)
+        url = url.format(api_type=api_type, method=method)
+
+        logger.debug(f"make request to {url} with data: {data}")
+        response = requests.post(url, data=data)
 
         result = response.content
         if api_type == 'rest':
@@ -118,6 +121,10 @@ class SberbankPaymentApi:
             'features': features,
         }
         result = self._make_request(url or self.url, api_type or self.api_type, 'register', params)
+
+        if result.get('errorCode', None) is not None:
+            raise SberbankApiException(result['errorCode'], result['errorMessage'])
+
         return result
 
     def reverse(self, orderId, extra_params=dict(), url=None, api_type=None):
