@@ -19,70 +19,70 @@ REGISTER_REQUEST = {
 }
 REGISTER_ERRORS = {
     '0': {
-        'errorCode': 0,
+        'errorCode': "0",
         'errorMessage': "Обработка запроса прошла без системных ошибок.",
     },
 
     '1000': {
-        'errorCode': 1,
+        'errorCode': "1",
         'errorMessage': "Заказ с таким номером уже обработан.",
     },
     '1001': {
-        'errorCode': 1,
+        'errorCode': "1",
         'errorMessage': "Неверный номер заказа.",
     },
 
     '3000': {
-        'errorCode': 3,
+        'errorCode': "3",
         'errorMessage': "Неизвестная валюта.",
     },
 
     '4000': {
-        'errorCode': 4,
+        'errorCode': "4",
         'errorMessage': "Номер заказа не может быть пуст.",
     },
     '4001': {
-        'errorCode': 4,
+        'errorCode': "4",
         'errorMessage': "Имя продавца не может быть пустым.",
     },
     '4002': {
-        'errorCode': 4,
+        'errorCode': "4",
         'errorMessage': "Отсутствует сумма.",
     },
     '4003': {
-        'errorCode': 4,
+        'errorCode': "4",
         'errorMessage': "URL возврата не может быть пуст.",
     },
     '4004': {
-        'errorCode': 4,
+        'errorCode': "4",
         'errorMessage': "Пароль не может быть пуст.",
     },
 
     '5000': {
-        'errorCode': 5,
+        'errorCode': "5",
         'errorMessage': "Доступ запрещён.",
     },
     '5001': {
-        'errorCode': 5,
+        'errorCode': "5",
         'errorMessage': "Пользователь должен сменить свой пароль.",
     },
     '5002': {
-        'errorCode': 5,
+        'errorCode': "5",
         'errorMessage': "[jsonParams] неверен.",
     },
 
     '7000': {
-        'errorCode': 7,
+        'errorCode': "7",
         'errorMessage': "Системная ошибка.",
     },
 
     '13000': {
-        'errorCode': 13,
+        'errorCode': "13",
         'errorMessage': "Мерчант не имеет привилегии выполнять проверочные платежи.",
     },
 
     '14000': {
-        'errorCode': 14,
+        'errorCode': "14",
         'errorMessage': "Features указаны некорректно.",
     },
 

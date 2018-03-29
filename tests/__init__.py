@@ -2,7 +2,8 @@
 
 import unittest
 
-from .register_test import RegisterTestCase
+from .register import RegisterTestCase
+from .reverse import ReverseTestCase
 
 
 
@@ -10,6 +11,8 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(RegisterTestCase('test_register'))
     suite.addTest(RegisterTestCase('test_register_errors'))
+    suite.addTest(ReverseTestCase('test_reverse'))
+    suite.addTest(ReverseTestCase('test_reverse_errors'))
     return suite
 
 if __name__ == '__main__':

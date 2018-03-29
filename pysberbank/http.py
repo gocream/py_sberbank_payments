@@ -86,15 +86,16 @@ class SberbankPaymentApi:
         data = self._make_data(params, remove_null=remove_null)
         url = url.format(api_type=api_type, method=method)
 
-        logger.debug(f"make request to {url} with data: {data}")
+        logger.info(f"make request to {url} with data: {data}")
         response = requests.post(url, data=data)
 
 
         result = response.content
+        logger.info(f"return {response.content}")
         if api_type == 'rest':
             result = response.json()
 
-            if result.get('errorCode', 0) != 0:
+            if result.get('errorCode', '0') != '0':
                 raise SberbankApiException(result['errorCode'], result['errorMessage'])
 
         return result
