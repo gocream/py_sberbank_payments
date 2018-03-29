@@ -98,7 +98,7 @@ class SberbankPaymentApi:
                  failUrl=None, description=None, language=None, pageView=None,
                  clientId=None, merchantLogin=None, jsonParams=None,
                  sessionTimeoutSecs=None, expirationDate=None, bindingId=None,
-                 features=None, extra_params=dict(), url=None, api_type=None):
+                 features=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
         """
