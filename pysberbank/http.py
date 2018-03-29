@@ -94,7 +94,7 @@ class SberbankPaymentApi:
         if api_type == 'rest':
             result = response.json()
 
-            if result.get('errorCode', None) is not None:
+            if result.get('errorCode', 0) != 0:
                 raise SberbankApiException(result['errorCode'], result['errorMessage'])
 
         return result

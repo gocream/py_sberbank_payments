@@ -196,7 +196,7 @@ class SberbankApiTestCase(TestCase):
                 # self.assertEqual(response, v)
                 # SberbankApiException
                 # self.assertRaises()
-                if k == '42':
+                if k in ['42', '0']:
                     continue
 
                 with self.assertRaises(pysberbank.errors.SberbankApiException):
