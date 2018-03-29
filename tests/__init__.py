@@ -8,6 +8,7 @@ import json
 import requests
 import unittest
 
+import pysberbank
 from pysberbank import Sberbank
 
 
@@ -191,9 +192,15 @@ class SberbankApiTestCase(TestCase):
 
         for k, v in REGISTER_ERRORS.items():
             with self.subTest(orderNumber=k):
-                response = api.register(k, "1000", "https://returnurl.example/")
-                self.assertIsNotNone(response)
-                self.assertEqual(response, v)
+                # self.assertIsNotNone(response)
+                # self.assertEqual(response, v)
+                # SberbankApiException
+                # self.assertRaises()
+                if k == '42':
+                    continue
+
+                with self.assertRaises(pysberbank.errors.SberbankApiException):
+                    response = api.register(k, "1000", "https://returnurl.example/")
 
 
 if __name__ == '__main__':
