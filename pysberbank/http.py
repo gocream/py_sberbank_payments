@@ -89,9 +89,14 @@ class SberbankPaymentApi:
         logger.debug(f"make request to {url} with data: {data}")
         response = requests.post(url, data=data)
 
+
         result = response.content
         if api_type == 'rest':
             result = response.json()
+
+            if result.get('errorCode', None) is not None:
+                raise SberbankApiException(result['errorCode'], result['errorMessage'])
+
         return result
 
     def register(self, orderNumber, amount, returnUrl, currency=None,
@@ -121,23 +126,19 @@ class SberbankPaymentApi:
             'features': features,
         }
         result = self._make_request(url or self.url, api_type or self.api_type, 'register', params)
-
-        if result.get('errorCode', None) is not None:
-            raise SberbankApiException(result['errorCode'], result['errorMessage'])
-
         return result
 
-    def reverse(self, orderId, extra_params=dict(), url=None, api_type=None):
+    def reverse(self, orderId, language=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:reverse
 
         orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
         """
 
-        params = extra_params.copy()
-        params.update({
+        params = {
             'orderId': orderId,
-        })
+            'language': language or self.language,
+        }
         result = self._make_request(url or self.url, api_type or self.api_type, 'reverse', params)
         return result
 
