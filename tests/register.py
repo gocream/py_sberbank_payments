@@ -164,7 +164,20 @@ class RegisterTestCase(TestCase):
 
     def test_register(self):
         api = Sberbank("test_username", "test_password")
-        response = api.register("42000", "1000", "https://returnurl.example/")
+        params = {
+            'amount': 100,
+            'currency': 643,
+            'language': "ru",
+            'orderNumber': 87654321,
+            'returnUrl': "https://server/applicaton_context/finish.html",
+            'jsonParams': {
+                'orderNumber': 1234567890
+            },
+            'pageView': "DESKTOP",
+            'expirationDate': "2014-09-08T14:14:14",
+            'merchantLogin': "merch_child",
+        }
+        response = api.register(**params)
         self.assertIsNotNone(response)
         self.assertEqual(response, REGISTER_REQUEST)
 

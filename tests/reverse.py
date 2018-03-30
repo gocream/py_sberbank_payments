@@ -83,7 +83,10 @@ class ReverseTestCase(TestCase):
 
     def test_register(self):
         api = Sberbank("test_username", "test_password")
-        response = api.reverse("42000")
+        response = api.reverse(
+            orderId = '9231a838-ac68-4a3e-bddb-d9781433d852',
+            language = 'ru',
+        )
         self.assertIsNotNone(response)
         self.assertEqual(response, REVERSE_REQUEST)
 
