@@ -152,17 +152,17 @@ class SberbankPaymentApi:
         result = self._make_request(url or self.url, api_type or self.api_type, 'refund', params)
         return result
 
-    def order_status(self, orderId, extra_params=dict(), url=None, api_type=None):
+    def order_status(self, orderId, language=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatus
 
         orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
         """
 
-        params = extra_params.copy()
-        params.update({
+        params = {
             'orderId': orderId,
-        })
+            'language': language or self.language,
+        }
         result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatus', params)
         return result
 

@@ -88,7 +88,7 @@ class RefundTestCase(TestCase):
     def tearDown(self):
         self.pathed_requests.stop()
 
-    def test_register(self):
+    def test_refund(self):
         api = Sberbank("test_username", "test_password")
         response = api.refund(
             orderId = "4302d369-a5e8-4432-a5e5-42acfab52c86",
@@ -98,7 +98,7 @@ class RefundTestCase(TestCase):
         self.assertIsNotNone(response)
         self.assertEqual(response, REQUEST)
 
-    def test_register_errors(self):
+    def test_refund_errors(self):
         api = Sberbank("test_username", "test_password")
 
         for k, v in ERRORS.items():
