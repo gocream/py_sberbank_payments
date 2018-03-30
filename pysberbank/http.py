@@ -11,14 +11,6 @@ logger = logging.getLogger("pysberbank")
 
 
 
-# def request_decorator(fn):
-#     def wrapper(cls, url=None, api_type=None, *args, **kwargs):
-#         method_name, params = fn(cls, *args, **kwargs)
-#         return cls._make_request(url, api_type, method_name, params)
-#     return wrapper
-
-
-
 
 DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"
 DEFAULT_API_TYPE = "rest"
@@ -143,7 +135,7 @@ class SberbankPaymentApi:
         result = self._make_request(url or self.url, api_type or self.api_type, 'reverse', params)
         return result
 
-    def refund(self, orderId, refundAmount, extra_params=dict(), url=None, api_type=None):
+    def refund(self, orderId, refundAmount, language=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
 
@@ -152,11 +144,11 @@ class SberbankPaymentApi:
             равна остатку в заказе.
         """
 
-        params = extra_params.copy()
-        params.update({
+        params = {
             'orderId': orderId,
             'refundAmount': refundAmount,
-        })
+            'language': language or self.language,
+        }
         result = self._make_request(url or self.url, api_type or self.api_type, 'refund', params)
         return result
 
