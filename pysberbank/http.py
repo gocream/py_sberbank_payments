@@ -165,7 +165,7 @@ class SberbankPaymentApi:
         result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatus', params)
         return result
 
-    def order_full_status(self, orderId=None, orderNumber=None, language=None,
+    def order_status_extended(self, orderId=None, orderNumber=None, language=None,
                           url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended

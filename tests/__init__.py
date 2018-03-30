@@ -6,6 +6,7 @@ from .register import RegisterTestCase
 from .reverse import ReverseTestCase
 from .refund import RefundTestCase
 from .order_status import OrderStatusTestCase
+from .order_status_extended import OrderStatusExtendedTestCase
 
 
 
@@ -19,6 +20,8 @@ def suite():
     suite.addTest(RefundTestCase('test_refund_errors'))
     suite.addTest(OrderStatusTestCase('test_order_status'))
     suite.addTest(OrderStatusTestCase('test_order_status_errors'))
+    suite.addTest(OrderStatusExtendedTestCase('order_status_extended'))
+    suite.addTest(OrderStatusExtendedTestCase('order_status_extended_errors'))
     return suite
 
 if __name__ == '__main__':
