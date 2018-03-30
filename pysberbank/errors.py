@@ -8,10 +8,10 @@ import logging
 class SberbankException(Exception):
     pass
 
-class SberbankRequestException(SberbankException):
+class SberbankApiException(SberbankException):
     pass
 
-class SberbankApiException(SberbankException):
+class SberbankRequestException(SberbankException):
     def __init__(self, code, message):
         self.code = code
         self.message = message

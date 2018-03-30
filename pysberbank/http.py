@@ -81,7 +81,6 @@ class SberbankPaymentApi:
         logger.info(f"make request to {url} with data: {data}")
         response = requests.post(url, data=data)
 
-
         result = response.content
         logger.info(f"return {response.content}")
         if api_type == 'rest':
@@ -166,8 +165,8 @@ class SberbankPaymentApi:
         result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatus', params)
         return result
 
-    def order_full_status(self, orderId=None, orderNumber=None,
-                          extra_params=dict(), url=None, api_type=None):
+    def order_full_status(self, orderId=None, orderNumber=None, language=None,
+                          url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended
 
@@ -180,13 +179,13 @@ class SberbankPaymentApi:
         """
 
         if (orderId is None) and (orderNumber is None):
-            raise SberbankApiRequestException("none of the orderId and \
+            raise SberbankException("none of the orderId and \
                 orderNumber parameters is specified")
 
-        params = extra_params.copy()
-        params.update({
+        params = {
             'orderId': orderId,
             'orderNumber': orderNumber,
-        })
+            'language': language or self.language,
+        }
         result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatusExtended', params)
         return result
