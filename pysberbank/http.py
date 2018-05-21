@@ -7,9 +7,8 @@ from .errors import SberbankApiException
 from .errors import SberbankException
 from .errors import SberbankRequestException
 
+
 logger = logging.getLogger("pysberbank")
-
-
 
 
 DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"
@@ -103,8 +102,8 @@ class SberbankPaymentApi:
         params = {
             'orderNumber': orderNumber,
             'amount': amount,
-            'returnUrl': returnUrl,
             'currency': currency or self.currency,
+            'returnUrl': returnUrl,
             'failUrl': failUrl,
             'description': description,
             'language': language or self.language,

@@ -9,7 +9,6 @@ from .order_status import OrderStatusTestCase
 from .order_status_extended import OrderStatusExtendedTestCase
 
 
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(RegisterTestCase('test_register'))
