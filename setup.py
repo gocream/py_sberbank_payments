@@ -16,6 +16,8 @@ reqs_path = 'requirements.txt'
 with codecs.open(os.path.join(os.path.dirname(__file__), reqs_path)) as reqs_file:
     requirements = reqs_file.read().split('\n')
 
+print(requirements)
+
 setup(
     author = 'Gocream',
     author_email = 'dmitry.dobrynin@gocream.ru',

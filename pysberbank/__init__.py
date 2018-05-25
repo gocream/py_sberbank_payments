@@ -13,4 +13,7 @@ try:
 except ImportError:
     version = '.'.join([str(j) for i in __VERSION__ for j in i])
 
-from .http import SberbankPaymentApi as Sberbank
+try:
+    from .http import SberbankPaymentApi as Sberbank
+except ModuleNotFoundError:
+    pass
