@@ -148,10 +148,12 @@ class SberbankPaymentApi:
             'orderId': orderId,
             'language': language or self.language,
         }
-        result = self._make_request(url or self.url, api_type or self.api_type, 'reverse', params)
+        result = self._make_request(url or self.url, api_type or self.api_type,
+                                    'reverse', params)
         return result
 
-    def refund(self, orderId, refundAmount, language=None, url=None, api_type=None):
+    def refund(self, orderId, refundAmount, language=None, url=None,
+               api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
 
@@ -165,7 +167,8 @@ class SberbankPaymentApi:
             'refundAmount': refundAmount,
             'language': language or self.language,
         }
-        result = self._make_request(url or self.url, api_type or self.api_type, 'refund', params)
+        result = self._make_request(url or self.url, api_type or self.api_type,
+                                    'refund', params)
         return result
 
     def order_status(self, orderId, language=None, url=None, api_type=None):
@@ -179,11 +182,12 @@ class SberbankPaymentApi:
             'orderId': orderId,
             'language': language or self.language,
         }
-        result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatus', params)
+        result = self._make_request(url or self.url, api_type or self.api_type,
+                                    'getOrderStatus', params)
         return result
 
-    def order_status_extended(self, orderId=None, orderNumber=None, language=None,
-                          url=None, api_type=None):
+    def order_status_extended(self, orderId=None, orderNumber=None,
+                              language=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended
 
@@ -206,5 +210,6 @@ class SberbankPaymentApi:
             'orderNumber': orderNumber,
             'language': language or self.language,
         }
-        result = self._make_request(url or self.url, api_type or self.api_type, 'getOrderStatusExtended', params)
+        result = self._make_request(url or self.url, api_type or self.api_type,
+                                    'getOrderStatusExtended', params)
         return result
