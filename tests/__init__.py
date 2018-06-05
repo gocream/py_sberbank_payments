@@ -23,6 +23,7 @@ def suite():
     suite.addTest(OrderStatusExtendedTestCase('order_status_extended_errors'))
     return suite
 
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
