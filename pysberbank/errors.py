@@ -1,19 +1,34 @@
 # -*- coding: utf-8 -*-
-
-import logging
-
+from requests import RequestException
 
 
-
-class SberbankException(Exception):
+class BaseSberbankException(Exception):
     pass
+
+
+class SberbankException(BaseSberbankException):
+    """
+    General exception
+
+    Thrown _before_ any request is made - configuration or pre checks error
+    """
+
 
 class SberbankApiException(SberbankException):
-    pass
+    """
+    Sberbank API errors
 
-class SberbankRequestException(SberbankException):
+    Exception contains `code` and `message`
+    """
+
     def __init__(self, code, message):
         self.code = code
         self.message = message
 
         super().__init__(f'Error {self.code}: {self.message}')
+
+
+class SberbankRequestException(BaseSberbankException, RequestException):
+    """
+    Wrapper around `RequestException` so we can catch them separatly
+    """

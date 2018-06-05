@@ -2,6 +2,7 @@
 
 import logging
 import requests
+from requests import RequestException
 
 from .errors import SberbankApiException
 from .errors import SberbankException
@@ -15,6 +16,7 @@ DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"
 DEFAULT_API_TYPE = "rest"
 DEFAULT_LANGUAGE = "ru"
 DEFAULT_CURREBCY = 643
+
 
 class SberbankPaymentApi:
     """
@@ -34,7 +36,10 @@ class SberbankPaymentApi:
         """
 
         if (not (bool(username) and bool(password))) == (token is None):
-            raise SberbankException("Auth params require. Setup username/password pair or token, not booth")
+            raise SberbankException(
+                "Auth params require. "
+                "Setup username/password pair or token, not both"
+            )
 
         self.username = username
         self.password = password
@@ -53,7 +58,7 @@ class SberbankPaymentApi:
         """
 
         if remove_null:
-            data = dict(filter(lambda x:x[1], params.items()))
+            data = dict(filter(lambda x: x[1], params.items()))
         else:
             data = params.copy()
 
@@ -67,8 +72,11 @@ class SberbankPaymentApi:
 
         return data
 
-    def _make_request(self, url, api_type, method_name, params=dict(),
+    def _make_request(self, url, api_type, method_name, params=None,
                       remove_null=True):
+        if params is None:
+            params = {}
+
         if api_type == 'rest':
             method = f'{method_name}.do'
         else:
@@ -77,16 +85,25 @@ class SberbankPaymentApi:
         data = self._make_data(params, remove_null=remove_null)
         url = url.format(api_type=api_type, method=method)
 
-        logger.info(f"make request to {url} with data: {data}")
-        response = requests.post(url, data=data)
+        logger.debug(f"make request to {url} with data: {data}")
 
-        result = response.content
-        logger.info(f"return {response.content}")
-        if api_type == 'rest':
-            result = response.json()
+        try:
+            response = requests.post(url, data=data)
 
-            if result.get('errorCode', '0') != '0':
-                raise SberbankApiException(result['errorCode'], result['errorMessage'])
+            result = response.content
+            logger.debug(f"return {response.content}")
+            if api_type == 'rest':
+                result = response.json()
+
+                if result.get('errorCode', '0') != '0':
+                    raise SberbankApiException(result['errorCode'],
+                                               result['errorMessage'])
+        except RequestException as e:
+            # wrap Requests exception in our for filtration purposes
+            raise SberbankRequestException(
+                request=e.request,
+                response=e.response
+            ) from e
 
         return result
 
@@ -116,7 +133,8 @@ class SberbankPaymentApi:
             'bindingId': bindingId,
             'features': features,
         }
-        result = self._make_request(url or self.url, api_type or self.api_type, 'register', params)
+        result = self._make_request(url or self.url, api_type or self.api_type,
+                                    'register', params)
         return result
 
     def reverse(self, orderId, language=None, url=None, api_type=None):
@@ -178,8 +196,10 @@ class SberbankPaymentApi:
         """
 
         if (orderId is None) and (orderNumber is None):
-            raise SberbankException("none of the orderId and \
-                orderNumber parameters is specified")
+            raise SberbankException(
+                "none of the orderId and "
+                "orderNumber parameters is specified"
+            )
 
         params = {
             'orderId': orderId,
