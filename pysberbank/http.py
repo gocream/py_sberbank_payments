@@ -110,10 +110,14 @@ class SberbankPaymentApi:
     def register(self, orderNumber, amount, returnUrl, currency=None,
                  failUrl=None, description=None, language=None, pageView=None,
                  clientId=None, merchantLogin=None, jsonParams=None,
+                 order_bundle=None, tax_system=None,
                  sessionTimeoutSecs=None, expirationDate=None, bindingId=None,
                  features=None, url=None, api_type=None):
         """
         https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
+
+        orderBundle - корзина для чека
+        taxSystem - система налогообложения
         """
 
         params = {
@@ -132,6 +136,8 @@ class SberbankPaymentApi:
             'expirationDate': expirationDate,
             'bindingId': bindingId,
             'features': features,
+            'orderBundle': order_bundle,
+            'taxSystem': tax_system,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
                                     'register', params)
