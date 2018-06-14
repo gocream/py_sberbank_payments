@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import logging
 import requests
 from requests import RequestException
@@ -25,7 +26,8 @@ class SberbankPaymentApi:
 
     def __init__(self, username=None, password=None, token=None,
                  url=DEFAULT_URL, api_type=DEFAULT_API_TYPE,
-                 language=DEFAULT_LANGUAGE, currency=DEFAULT_CURREBCY):
+                 language=DEFAULT_LANGUAGE, currency=DEFAULT_CURREBCY,
+                 ensure_ascii=True):
         """
             username - username at sberbank api
             password - password at sberbank api
@@ -50,6 +52,8 @@ class SberbankPaymentApi:
         self.language = language
         self.currency = currency
 
+        self.ensure_ascii = ensure_ascii
+
     def _make_data(self, params, remove_null=True):
         """
         add username/password pair or token to request params
@@ -69,6 +73,12 @@ class SberbankPaymentApi:
                 'userName': self.username,
                 'password': self.password,
             })
+
+        # we need to encode lists and dicts in json
+        for k,v in data.items():
+            if not isinstance(v, (list, dict)):
+                continue
+            data[k] = json.dumps(data[k], ensure_ascii=self.ensure_ascii)
 
         return data
 
