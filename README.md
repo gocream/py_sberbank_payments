@@ -3,6 +3,8 @@ Python wrapper for Sberbank API
 
 API - [link][api_url]
 
+Тестовые карты - [link][test_cards]
+
 
 TO DO:
 ======
@@ -13,4 +15,5 @@ TO DO:
 
 REST only
 
-[api_url]:https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
+[api_url]: https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
+[test_cards]: https://securepayments.sberbank.ru/wiki/doku.php/test_cards

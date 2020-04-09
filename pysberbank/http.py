@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from requests import RequestException
 import json
 import logging
 import requests
-from requests import RequestException
 
 from .errors import SberbankApiException
 from .errors import SberbankException
@@ -75,7 +75,7 @@ class SberbankPaymentApi:
             })
 
         # we need to encode lists and dicts in json
-        for k,v in data.items():
+        for k, v in data.items():
             if not isinstance(v, (list, dict)):
                 continue
             data[k] = json.dumps(data[k], ensure_ascii=self.ensure_ascii)
@@ -124,10 +124,20 @@ class SberbankPaymentApi:
                  sessionTimeoutSecs=None, expirationDate=None, bindingId=None,
                  features=None, url=None, api_type=None):
         """
-        https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
+        Register cart
 
-        orderBundle - корзина для чека
-        taxSystem - система налогообложения
+        `Request doc`_
+        `Request Cart doc`_
+
+        Attributes:
+            orderBundle: корзина для чека
+            taxSystem: система налогообложения
+
+        .. _Request doc:
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
+
+        .. _Request Cart doc:
+            https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register_cart
         """
 
         params = {
@@ -155,9 +165,17 @@ class SberbankPaymentApi:
 
     def reverse(self, orderId, language=None, url=None, api_type=None):
         """
-        https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:reverse
+        Reverse payment
 
-        orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+        Функция отмены доступна в течение ограниченного времени после оплаты, точные сроки необходимо уточнять в «Сбербанке».
+
+        `Request doc`_
+
+        Attributes:
+            orderId: Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+
+        .. _Request doc:
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:reverse
         """
 
         params = {
@@ -171,16 +189,22 @@ class SberbankPaymentApi:
     def refund(self, orderId, refundAmount, language=None, url=None,
                api_type=None):
         """
-        https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
+        Refund
 
-        orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
-        refundAmount - Сумма возврата в валюте заказа. Может быть меньше или
-            равна остатку в заказе.
+        `Request doc`_
+
+        Attributes
+            orderId: Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+            refundAmount: Сумма возврата в валюте заказа. Может быть меньше или
+                равна остатку в заказе.
+
+        .. _Request doc:
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
         """
 
         params = {
             'orderId': orderId,
-            'refundAmount': refundAmount,
+            'amount': refundAmount,
             'language': language or self.language,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
