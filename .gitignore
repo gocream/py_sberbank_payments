@@ -10,6 +10,7 @@ db.*
 /lib
 /logs
 /share
+/stuff
 
 /local_settings.py
 pip-selfcheck.json
