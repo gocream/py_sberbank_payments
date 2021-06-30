@@ -13,7 +13,9 @@ TO DO:
 * unittests
 * test flask app
 
+
 REST only
+
 
 [api_url]: https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
 [test_cards]: https://securepayments.sberbank.ru/wiki/doku.php/test_cards
