@@ -50,7 +50,4 @@ version = __version__ = get_version((
 ))
 
 
-# try:
 from .http import SberbankPaymentApi as Sberbank
-# except ModuleNotFoundError:
-#     pass
