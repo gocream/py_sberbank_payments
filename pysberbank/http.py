@@ -142,7 +142,7 @@ class SberbankPaymentApi:
         pageView=None,
         clientId=None,
         merchantLogin=None,
-        sonParams=None,
+        jsonParams=None,
         order_bundle=None,
         tax_system=None,
         sessionTimeoutSecs=None,
