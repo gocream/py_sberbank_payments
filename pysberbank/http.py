@@ -35,6 +35,10 @@ class SberbankPaymentApi:
             api_type - api type (soap | rest) only rest ready
             language - default language (ISO 639-1)
             currency - default currency (ISO 4217)
+
+            @TODO:
+             * remove `url` parameter in favor of a boolean `production` parameter
+             * move `ensure_ascii` parameter to `_make_data` method parameter and pass it from class methods
         """
 
         if (not (bool(username) and bool(password))) == (token is None):
@@ -82,32 +86,41 @@ class SberbankPaymentApi:
 
         return data
 
-    def _make_request(self, url, api_type, method_name, params=None,
-                      remove_null=True):
-        if params is None:
-            params = {}
-
+    def _make_request(
+        self,
+        url,
+        api_type,
+        method_name,
+        params=None,
+        remove_null=True,
+        **kwargs,
+    ):
+        # resource
         if api_type == 'rest':
             method = f'{method_name}.do'
         else:
             method = method_name
-
-        data = self._make_data(params, remove_null=remove_null)
         url = url.format(api_type=api_type, method=method)
 
-        logger.debug(f"make request to {url} with data: {data}")
+        # pyload
+        if params is None:
+            params = {}
+        data = self._make_data(params, remove_null=remove_null)
 
+        logger.debug(f"Make request to {url} with data {data} and params {kwargs}.")
         try:
-            response = requests.post(url, data=data)
+            response = requests.post(url, data=data, **kwargs)
+            logger.debug(f"Response to {url} request is {response.content}.")
 
-            result = response.content
-            logger.debug(f"return {response.content}")
             if api_type == 'rest':
-                result = response.json()
+                result = response.content.json()
 
                 if result.get('errorCode', '0') != '0':
                     raise SberbankApiException(result['errorCode'],
                                                result['errorMessage'])
+            else:
+                result = response.content
+
         except RequestException as e:
             # wrap Requests exception in our for filtration purposes
             raise SberbankRequestException(
@@ -117,12 +130,29 @@ class SberbankPaymentApi:
 
         return result
 
-    def register(self, orderNumber, amount, returnUrl, currency=None,
-                 failUrl=None, description=None, language=None, pageView=None,
-                 clientId=None, merchantLogin=None, jsonParams=None,
-                 order_bundle=None, tax_system=None,
-                 sessionTimeoutSecs=None, expirationDate=None, bindingId=None,
-                 features=None, url=None, api_type=None):
+    def register(
+        self,
+        orderNumber,
+        amount,
+        returnUrl,
+        currency=None,
+        failUrl=None,
+        description=None,
+        language=None,
+        pageView=None,
+        clientId=None,
+        merchantLogin=None,
+        sonParams=None,
+        order_bundle=None,
+        tax_system=None,
+        sessionTimeoutSecs=None,
+        expirationDate=None,
+        bindingId=None,
+        features=None,
+        url=None,
+        api_type=None,
+        **kwargs,
+    ):
         """
         Register cart
 
@@ -137,7 +167,7 @@ class SberbankPaymentApi:
            https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register
 
         .. _Request Cart doc:
-            https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register_cart
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:register_cart
         """
 
         params = {
@@ -160,14 +190,15 @@ class SberbankPaymentApi:
             'taxSystem': tax_system,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
-                                    'register', params)
+                                    'register', params, **kwargs)
         return result
 
-    def reverse(self, orderId, language=None, url=None, api_type=None):
+    def reverse(self, orderId, language=None, url=None, api_type=None, **kwargs):
         """
         Reverse payment
 
-        Функция отмены доступна в течение ограниченного времени после оплаты, точные сроки необходимо уточнять в «Сбербанке».
+        Функция отмены доступна в течение ограниченного времени после оплаты,
+        точные сроки необходимо уточнять в «Сбербанке».
 
         `Request doc`_
 
@@ -183,11 +214,10 @@ class SberbankPaymentApi:
             'language': language or self.language,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
-                                    'reverse', params)
+                                    'reverse', params, **kwargs)
         return result
 
-    def refund(self, orderId, refundAmount, language=None, url=None,
-               api_type=None):
+    def refund(self, orderId, refundAmount, language=None, url=None, api_type=None, **kwargs):
         """
         Refund
 
@@ -197,6 +227,9 @@ class SberbankPaymentApi:
             orderId: Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
             refundAmount: Сумма возврата в валюте заказа. Может быть меньше или
                 равна остатку в заказе.
+            language: Не указан в документации, но вероятно по аналогии с
+                остальными методами он всё же там должен быть... Вероятно...
+                Нужно поправить если ругаться будет
 
         .. _Request doc:
            https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:refund
@@ -208,14 +241,23 @@ class SberbankPaymentApi:
             'language': language or self.language,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
-                                    'refund', params)
+                                    'refund', params, **kwargs)
         return result
 
-    def order_status(self, orderId, language=None, url=None, api_type=None):
+    def order_status(self, orderId, language=None, url=None, api_type=None, **kwargs):
         """
-        https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatus
+        Order status
 
-        orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+        `Request doc`_
+
+        Attributes
+            orderId: Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+            language: Не указан в документации, но вероятно по аналогии с
+                остальными методами он всё же там должен быть... Вероятно...
+                Нужно поправить если ругаться будет
+
+        .. _Request doc:
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatus
         """
 
         params = {
@@ -223,20 +265,37 @@ class SberbankPaymentApi:
             'language': language or self.language,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
-                                    'getOrderStatus', params)
+                                    'getOrderStatus', params, **kwargs)
         return result
 
-    def order_status_extended(self, orderId=None, orderNumber=None,
-                              language=None, url=None, api_type=None):
+    def order_status_extended(
+        self,
+        orderId=None,
+        orderNumber=None,
+        anguage=None,
+        url=None,
+        api_type=None,
+        **kwargs,
+    ):
         """
-        https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended
+        Order status extended
 
-        orderId - Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
-        orderNumber - Номер (идентификатор) заказа в системе магазина,
+        В запросе должен присутствовать либо _orderId_, либо _orderNumber_.
+        Если в запросе присутствуют оба параметра, то приоритетным считается
+        _orderId_.
+
+        `Request doc`_
+
+        Attributes
+            orderId: Номер заказа в платёжном шлюзе. Уникален в пределах шлюза.
+            orderNumber: Номер (идентификатор) заказа в системе магазина,
             уникален для каждого магазина в пределах системы - до 30 символов.
+            language: Не указан в документации, но вероятно по аналогии с
+                остальными методами он всё же там должен быть... Вероятно...
+                Нужно поправить если ругаться будет
 
-        В запросе должен присутствовать либо orderId, либо orderNumber. Если в
-        запросе присутствуют оба параметра, то приоритетным считается orderId.
+        .. _Request doc:
+           https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:requests:getorderstatusextended
         """
 
         if (orderId is None) and (orderNumber is None):
@@ -251,5 +310,5 @@ class SberbankPaymentApi:
             'language': language or self.language,
         }
         result = self._make_request(url or self.url, api_type or self.api_type,
-                                    'getOrderStatusExtended', params)
+                                    'getOrderStatusExtended', params, **kwargs)
         return result
