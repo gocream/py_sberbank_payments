@@ -107,7 +107,11 @@ class SberbankPaymentApi:
             params = {}
         data = self._make_data(params, remove_null=remove_null)
 
+        # request params
+        kwargs.setdefault('timeout', (3, 27))
+
         logger.debug(f"Make request to {url} with data {data} and params {kwargs}.")
+
         try:
             response = requests.post(url, data=data, **kwargs)
             logger.debug(f"Response to {url} request is {response.content}.")
