@@ -279,6 +279,7 @@ class SberbankPaymentApi:
         anguage=None,
         url=None,
         api_type=None,
+        language=None,
         **kwargs,
     ):
         """
