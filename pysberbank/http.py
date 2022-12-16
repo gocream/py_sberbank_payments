@@ -117,7 +117,7 @@ class SberbankPaymentApi:
             logger.debug(f"Response to {url} request is {response.content}.")
 
             if api_type == 'rest':
-                result = response.content.json()
+                result = response.json()
 
                 if result.get('errorCode', '0') != '0':
                     raise SberbankApiException(result['errorCode'],
