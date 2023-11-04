@@ -1,16 +1,11 @@
-*.egg-info
 *.log
+*.mo
 *.py[cod]
-*.so
+*.sublime-project
+*.sublime-workspace
+*~
 .*
-db.*
 
-/bin
-/include
-/lib
-/logs
-/share
+/docs/dist
 /stuff
-
-/local_settings.py
-pip-selfcheck.json
+/dist

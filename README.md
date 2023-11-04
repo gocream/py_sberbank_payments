@@ -1,6 +1,6 @@
-# Python wrapper for Sberbank API
+<h1 align="center" >Py Sberbank Payments</h1>
 
-API - [link][api_url]
+Python wrapper for [Sberbank Payments API](https://securepayments.sberbank.ru/wiki/doku.php/start).
 
 Тестовые карты - [link][test_cards]
 
@@ -18,5 +18,4 @@ API - [link][api_url]
 * test flask app
 
 
-[api_url]: https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
 [test_cards]: https://securepayments.sberbank.ru/wiki/doku.php/test_cards
