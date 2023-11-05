@@ -1,6 +1,6 @@
 {
 	"project": {
-		"name": "DD Yandex Pay",
-		"description": "Wrapper for Yandex Pay API."
+		"name": "Py Sberbank Payments",
+		"description": "Python wrapper for Sberbank Payments API."
 	}
 }
