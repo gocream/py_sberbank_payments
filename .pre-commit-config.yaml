@@ -10,6 +10,12 @@ repos:
         language: system
         'types_or': [python, pyi]
         stages: ['pre-commit']
+# For some reason it crashes when setting up the environment
+# -   repo: https://github.com/jorisroovers/gitlint
+#     rev: v0.19.1  # Fill in a tag / sha here
+#     hooks:
+#     -   id: gitlint
+#         name: Check commit title and description
 -   repo: local
     hooks:
     -   id: gitlint
