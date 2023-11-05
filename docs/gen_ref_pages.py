@@ -86,7 +86,7 @@ def generate_code_section():
     """
     Function for parsing the source folder and registering files in the documentation
     """
-    if os.environ.get("PYSP_MKDOCS_CODE_PARCE_ENABLED", "t").lower() not in TRUE_CHOICES:
+    if os.environ.get("PYSP_MKDOCS_CODE_PARCE_ENABLED", "f").lower() not in TRUE_CHOICES:
         return
 
     # parse and register
