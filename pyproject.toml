@@ -38,9 +38,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-# "Documentation" = "https://gocream.github.io/dd_yandex_pay"
+# "Documentation" = "https://gocream.github.io/py_sberbank_payments"
 "Repository" = "https://github.com/gocream/py_sberbank_payments"
-# "Changelog" = "https://gocream.github.io/dd_yandex_pay/changelog/"
+# "Changelog" = "https://gocream.github.io/py_sberbank_payments/changelog/"
 "Bug Tracker" = "https://github.com/gocream/py_sberbank_payments/issues"
 
 [tool.hatch.version]
@@ -52,7 +52,7 @@ include = [
 	"AUTHORS",
 ]
 exclude = [
-	# "/docs",
+	"/docs",
 	".gitignore",
 	"CHANGELOG.md",
 	"CONTRIBUTING.md",
@@ -112,6 +112,35 @@ check = [
 format = [
 	"ruff --fix {args:.}",
 	"black {args:.}",
+]
+
+[tool.hatch.envs.docs]
+description = "Docs environment"
+detached = true
+python = "3.12"
+dependencies = [
+	"mkdocs[i18n]==1.5.3",
+	"mkdocs-literate-nav==0.6.1",
+	"mkdocs-material==9.4.7",
+	"mkdocs-git-revision-date-localized-plugin==1.2.1",
+	"mkdocs-git-authors-plugin==0.7.2",
+	"mkdocstrings-python==1.7.3",
+	"black==23.10.1",
+	"mkdocs-minify-plugin==0.7.1",
+	"mkdocs-gen-files==0.5.0",
+	"Pygments==2.16.1",
+	"mike==2.0.0",
+	# "setuptools==68.2.2",  # need for mike
+	"linkchecker==10.3.0",
+]
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --config-file mkdocs.yml --clean --strict {args}"
+serve = "mkdocs serve --config-file mkdocs.yml --dev-addr localhost:8000 {args}"
+ci-build = "mike deploy --config-file mkdocs.yml --update-aliases {args}"
+validate = "linkchecker --config .linkcheckerrc docs/dist"
+build-check = [
+	"build --no-directory-urls",
+	"validate",
 ]
 
 [tool.black]

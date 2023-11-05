@@ -36,14 +36,14 @@ As you develop and refine, please try to keep your repository consistent with [g
 When working on a project, it is extremely important to cover everything with tests in order to avoid problems and errors in the code. Read about tests in the corresponding [section](tests.md). -->
 
 
-<!-- ## Documentation
+## Documentation
 
-The documentation is implemented using the [mkdocs](https://www.mkdocs.org/) generator and the [mkdocs material](https://squidfunk.github.io/mkdocs-material/) theme. When working on library functionality, it is important to expand the [usage](../../usage/getting_started/) section. For more information about developing documentation, see the corresponding [section](docs/index.md). -->
+The documentation is implemented using the [mkdocs](https://www.mkdocs.org/) generator and the [mkdocs material](https://squidfunk.github.io/mkdocs-material/) theme. When working on library functionality, it is important to expand the usage <!--[usage](../../usage/getting_started/)--> section. For more information about developing documentation, see the corresponding [section](docs/index.md).
 
 
 ## Versioning
 
-::: dd_yandex_pay.__version__
+::: py_sberbank_payments.__version__
 	options:
 		show_root_heading: false
 		show_root_toc_entry: false
@@ -57,13 +57,13 @@ To write a commit, we adhere to the [Conventional Commits](https://www.conventio
 	The list of emoji needs to be improved, now it is bloated and there are controversial points like :fire: which means deleting the code...
 
 
-<!-- ## Changelog generation
+## Changelog generation
 
 You can generate a Changelog with the following command using [gitmoji-changelog](https://github.com/frinyvonnick/gitmoji-changelog):
 
 ```console
 $ hatch run changelog-update
-``` -->
+```
 
 
 <!-- ## Building and publishing
