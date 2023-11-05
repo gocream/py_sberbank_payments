@@ -113,3 +113,82 @@ format = [
 	"ruff --fix {args:.}",
 	"black {args:.}",
 ]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+show-fixes = true
+# update-check = true
+select = [
+	"A",
+	"B",
+	"C",
+	"DTZ",
+	"E",
+	"EM",
+	"F",
+	"I",
+	"ICN",
+	"ISC",
+	"N",
+	"PLC",
+	"PLE",
+	"PLR",
+	"PLW",
+	"Q",
+	"RUF",
+	"S",
+	"SIM",
+	"T",
+	"TID",
+	"UP",
+	"W",
+	"YTT",
+]
+ignore = [
+	"RUF001",  # Allow similar characters like latin `c` and cyrillic `с`
+	"RUF002",  # Allow russian at docstrings
+	"RUF003",  # Allow russian at comment
+	"PLR0913",  # Allow any number of function arguments
+	"E741",  # Allow variables of like "l", "O",  "i"
+	# # Allow non-abstract empty methods in abstract base classes
+	# "B027",
+	# # Ignore checks for possible passwords
+	# "S105", "S106", "S107",
+	# # Ignore complexity
+	# "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+	# "PLC1901", # empty string comparisons
+	# "PLW2901", # `for` loop variable overwritten
+	"SIM114", # Combine `if` branches using logical `or` operator
+]
+[tool.ruff.extend-per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"sb_client.py" = ["N803"]
+"test_*.py" = ["S101", "PLR2004", "DTZ001", "RUF012"]
+[tool.ruff.flake8-import-conventions]
+[tool.ruff.flake8-import-conventions.extend-aliases]
+[tool.ruff.flake8-quotes]
+[tool.ruff.flake8-unused-arguments]
+ignore-variadic-names = true
+[tool.ruff.isort]
+force-single-line = true
+known-first-party = ["py_sberbank_payments"]
+lines-after-imports = 2
+no-lines-before = ["local-folder"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+[tool.ruff.isort.sections]
+
+[tool.isort]
+known_first_party = ["py_sberbank_payments"]
+lines_after_imports = 2
+no_lines_before = ["LOCALFOLDER"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+force_single_line  = true
+
+[tool.coverage.run]
+omit = ["*/tests/*"]
+source = ["py_sberbank_payments"]
