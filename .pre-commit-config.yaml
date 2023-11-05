@@ -10,8 +10,12 @@ repos:
         language: system
         'types_or': [python, pyi]
         stages: ['pre-commit']
--   repo: https://github.com/jorisroovers/gitlint
-    rev: v0.19.1  # Fill in a tag / sha here
+-   repo: local
     hooks:
     -   id: gitlint
-        name: Check commit title and description
+        name: gitlint
+        description: Check commit title and description
+        language: system
+        entry: hatch run lint:gitlint
+        args: [--staged, --msg-filename]
+        stages: [commit-msg]
