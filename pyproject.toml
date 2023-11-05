@@ -10,6 +10,7 @@ requires-python = ">=3.10"
 license = "LGPL-3.0"
 authors = [
 	{ name = "Dmitry Dobrynin", email = "dd@tovarisch.engineer" },
+	{ name = "Alexander Kaidalov", email = "ak@gocream.ru" },
 ]
 keywords = ["sberbank", "api", "payment"]
 classifiers = [
@@ -54,6 +55,60 @@ exclude = [
 	# "/docs",
 	".gitignore",
 	"CHANGELOG.md",
-	# "CONTRIBUTING.md",
+	"CONTRIBUTING.md",
 	"tests",
+]
+
+[tool.hatch.envs.default]
+description = "Dev environment"
+python = "3.12"
+dependencies = [
+	"pre-commit==3.5.0",
+	"ipython==8.17.1",
+	"requests>=2,<3",
+]
+[tool.hatch.envs.default.env-vars]
+PYTHONPATH  = "."
+[tool.hatch.envs.default.scripts]
+precommit_install = "pre-commit install {args}"
+precommit_uninstall = "pre-commit uninstall {args}"
+init = [
+	"git config --local gitflow.branch.master \"main\"",
+	"git config --local gitflow.branch.develop \"dev\"",
+	"git config --local gitflow.prefix.feature \"feature/\"",
+	"git config --local gitflow.prefix.bugfix \"bugfix/\"",
+	"git config --local gitflow.prefix.release \"release/\"",
+	"git config --local gitflow.prefix.hotfix \"hotfix/\"",
+	"git config --local gitflow.prefix.support \"support/\"",
+	"git config --local gitflow.prefix.versiontag \"v\"",
+	"git config --local gitflow.path.hooks $(pwd)\"/.git/hooks\"",
+	"precommit_install",
+]
+remove = [
+	"git config --local --remove-section gitflow.branch",
+	"git config --local --remove-section gitflow.prefix",
+	"git config --local --remove-section gitflow.path",
+	"precommit_uninstall",
+]
+changelog-update = [
+	"git fetch origin --tags",
+	"gitmoji-changelog update \"$(hatch version)\" --preset generic --group-similar-commits",
+]
+
+[tool.hatch.envs.lint]
+description = "Lint environment"
+detached = true
+python = "3.12"
+dependencies = [
+	"ruff==0.1.4",
+	"black==23.10.1",
+]
+[tool.hatch.envs.lint.scripts]
+check = [
+	"ruff {args:.}",
+	"black --check --diff {args:.}",
+]
+format = [
+	"ruff --fix {args:.}",
+	"black {args:.}",
 ]
