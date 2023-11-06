@@ -2,12 +2,8 @@ name: Release documentation deployment
 
 on:
   push:
-    tags:
-    - "v*"
-  push:
-    branches:
-    - dev
-    - refactor
+    tags: ["v*"]
+    branches: ["dev", "refactor"]
 
 concurrency:
   group: gh-pages
